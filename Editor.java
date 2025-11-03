@@ -25,7 +25,7 @@ public class Editor {
         }
     }
 
-    // E oferece métodos subscribe/unsubscribe diretamente
+    // E também oferece métodos subscribe/unsubscribe diretamente
     public void subscribe(String eventType, EventListener listener) {
         events.subscribe(eventType, listener);
     }
@@ -33,5 +33,7 @@ public class Editor {
     public void unsubscribe(String eventType, EventListener listener) {
         events.unsubscribe(eventType, listener);
     }
-
+    public void notify(String eventType, File file) {
+        events.notify(eventType, file);
+    }
 }
