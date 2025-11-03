@@ -1,40 +1,51 @@
 package br.edu.ifpb.padroes;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class Editor {
 
-    //A classe Editor agora encapsula EventManager (private)
-    private EventManager events;
     private File file;
 
+    //A lista de observer agora está em Editor
+    private Map<String, List<EventListener>> listeners = new HashMap<>();
+
     public Editor() {
-        this.events = new EventManager("open", "save");
+        //Inicializa as listas para cada tipo de evento
+        this.listeners.put("open", new ArrayList<>());
+        this.listeners.put("save", new ArrayList<>());
+    }
+
+    public void subscribe(String eventType, EventListener listener) {
+        List<EventListener> users = listeners.get(eventType);
+        users.add(listener);
+    }
+
+    public void unsubscribe(String eventType, EventListener listener) {
+        List<EventListener> users = listeners.get(eventType);
+        users.remove(listener);
+    }
+
+    private void notify(String eventType, File file) {
+        List<EventListener> users = listeners.get(eventType);
+        for (EventListener listener : users) {
+            listener.update(eventType, file);
+        }
     }
 
     public void openFile(String filePath) {
         this.file = new File(filePath);
-        events.notify("open", file);
+        notify("open", file);
     }
 
     public void saveFile() throws Exception {
         if (this.file != null) {
-            events.notify("save", file);
+            notify("save", file);
         } else {
             throw new Exception("Please open a file first.");
         }
-    }
-
-    // E também oferece métodos subscribe/unsubscribe diretamente
-    public void subscribe(String eventType, EventListener listener) {
-        events.subscribe(eventType, listener);
-    }
-
-    public void unsubscribe(String eventType, EventListener listener) {
-        events.unsubscribe(eventType, listener);
-    }
-
-    public void notify(String eventType, File file) {
-        events.notify(eventType, file);
     }
 }
