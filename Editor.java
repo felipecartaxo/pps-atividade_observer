@@ -29,7 +29,7 @@ public class Editor {
         users.remove(listener);
     }
 
-    private void notify(String eventType, File file) {
+    public void notify(String eventType, File file) {
         List<EventListener> users = listeners.get(eventType);
         for (EventListener listener : users) {
             listener.update(eventType, file);
